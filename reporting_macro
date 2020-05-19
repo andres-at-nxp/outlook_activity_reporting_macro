@@ -81,7 +81,7 @@ Sub ThisOultookSession()
     destination.Value = Excel.Application.Transpose(Categories)
     '2
     Set destination = .Worksheets(1).Range("B1")
-    Set destination = destination.Resize(UBound(Categories), DateLength + 1)
+    Set destination = destination.Resize(UBound(Categories) + 1, DateLength + 1)
     destination.Value = Excel.Application.Transpose(Matrix)
 
   End With
