@@ -1,0 +1,6 @@
+* Report granularity to be modified to 1 day
+* Allow for a particular set of dates
+* Separate meetings with multiple categories
+* Calculate totals
+* Avoid double-counting
+* Ignore tentative meetings (as an option)
