@@ -1,0 +1,88 @@
+Sub ThisOultookSession()
+  Dim oFld As Outlook.MAPIFolder
+  Dim oItems As Outlook.Items
+  Dim sFind As String
+  Dim obj As Object
+  Dim i As Long
+  Dim j As Long
+  Dim startDate As Date
+  Dim endDate As Date
+  Dim Categories() As String
+  Dim TimeCount() As Long
+  Dim Exists As Boolean
+  Dim wb As Excel.Workbook
+  Dim destination As Range
+
+  
+  startDate = Date - Weekday(Date) + 1
+  endDate = Date - Weekday(Date) + 7
+  
+  ReDim Categories(0)
+  ReDim TimeCount(0)
+
+  Set oFld = Application.Session.GetDefaultFolder(olFolderCalendar)
+  Set oItems = oFld.Items
+
+  oItems.Sort "[Start]", False
+  oItems.IncludeRecurrences = True
+    
+  dtDate = startDate
+  Do While dtDate <= endDate
+    sFind = Format(dtDate, "ddddd")
+
+    sFind = "[Start] <= " & _
+                Chr(34) & sFind & " 11:59 PM" & Chr(34) & _
+                " AND [End] > " & _
+                Chr(34) & sFind & " 12:00 AM" & Chr(34)
+
+    Set oDay = oItems.Restrict(sFind)
+    For Each meeting In oDay
+        i = i + 1
+        j = 0
+        Exists = False
+        For Each cat In Categories
+            If cat = meeting.Categories Then
+                Exists = True
+            End If
+            If Exists = False Then
+                j = j + 1
+            End If
+        Next cat
+        If Exists = False Then
+            ReDim Preserve Categories(UBound(Categories) + 1)
+            ReDim Preserve TimeCount(UBound(TimeCount) + 1)
+            Categories(j) = meeting.Categories
+        End If
+        TimeCount(j) = TimeCount(j) + meeting.Duration
+    Next
+    dtDate = dtDate + 1
+  Loop
+  'Shell ("C:\Program Files\Microsoft Office\root\Office16\Excel.exe")
+  'my = ExcelAll()
+  Set objExcel = New Excel.Application
+  objExcel.Visible = True
+  Set wb = objExcel.Workbooks.Add
+  'GetObject(, "Excel.Application").Visible = True
+  With wb
+    .Activate
+    
+    ' 1
+    .Worksheets(1).Range("A1").Value = "Category"
+    Set destination = .Worksheets(1).Range("A2")
+    Set destination = destination.Resize(UBound(Categories), 1)
+    destination.Value = Excel.Application.Transpose(Categories)
+    '2
+    .Worksheets(1).Range("B1").Value = "Minutes spent on this week"
+    Set destination = .Worksheets(1).Range("B2")
+    Set destination = destination.Resize(UBound(TimeCount), 1)
+    destination.Value = Excel.Application.Transpose(TimeCount)
+    '3
+    'Total = 0
+    'For Each entry In TimeCount
+    '    Total = Total + entry
+    'Next
+    '.Worksheets(1).Range("C1").Value = Total
+  End With
+  
+End Sub
+
