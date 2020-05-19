@@ -5,10 +5,15 @@ Sub ThisOultookSession()
   Dim obj As Object
   Dim i As Long
   Dim j As Long
+  Dim iDate As Long
+  Dim iCat As Long
   Dim startDate As Date
   Dim endDate As Date
+  Dim DateLength As Long
   Dim Categories() As String
   Dim TimeCount() As Long
+  Dim Matrix() As Variant
+  
   Dim Exists As Boolean
   Dim wb As Excel.Workbook
   Dim destination As Range
@@ -16,9 +21,9 @@ Sub ThisOultookSession()
   
   startDate = Date - Weekday(Date) + 1
   endDate = Date - Weekday(Date) + 7
-  
+  DateLength = endDate - startDate
   ReDim Categories(0)
-  ReDim TimeCount(0)
+  ReDim Matrix(DateLength, 1)
 
   Set oFld = Application.Session.GetDefaultFolder(olFolderCalendar)
   Set oItems = oFld.Items
@@ -27,7 +32,10 @@ Sub ThisOultookSession()
   oItems.IncludeRecurrences = True
     
   dtDate = startDate
+  iDate = 0
+  
   Do While dtDate <= endDate
+    Matrix(iDate, 0) = dtDate
     sFind = Format(dtDate, "ddddd")
 
     sFind = "[Start] <= " & _
@@ -50,19 +58,19 @@ Sub ThisOultookSession()
         Next cat
         If Exists = False Then
             ReDim Preserve Categories(UBound(Categories) + 1)
-            ReDim Preserve TimeCount(UBound(TimeCount) + 1)
+            ReDim Preserve Matrix(DateLength, UBound(Categories) + 1)
             Categories(j) = meeting.Categories
         End If
-        TimeCount(j) = TimeCount(j) + meeting.Duration
+        Matrix(iDate, j + 1) = Matrix(iDate, j + 1) + meeting.Duration
     Next
     dtDate = dtDate + 1
+    iDate = iDate + 1
   Loop
-  'Shell ("C:\Program Files\Microsoft Office\root\Office16\Excel.exe")
-  'my = ExcelAll()
+
   Set objExcel = New Excel.Application
   objExcel.Visible = True
   Set wb = objExcel.Workbooks.Add
-  'GetObject(, "Excel.Application").Visible = True
+
   With wb
     .Activate
     
@@ -72,17 +80,10 @@ Sub ThisOultookSession()
     Set destination = destination.Resize(UBound(Categories), 1)
     destination.Value = Excel.Application.Transpose(Categories)
     '2
-    .Worksheets(1).Range("B1").Value = "Minutes spent on this week"
-    Set destination = .Worksheets(1).Range("B2")
-    Set destination = destination.Resize(UBound(TimeCount), 1)
-    destination.Value = Excel.Application.Transpose(TimeCount)
-    '3
-    'Total = 0
-    'For Each entry In TimeCount
-    '    Total = Total + entry
-    'Next
-    '.Worksheets(1).Range("C1").Value = Total
+    Set destination = .Worksheets(1).Range("B1")
+    Set destination = destination.Resize(UBound(Categories), DateLength + 1)
+    destination.Value = Excel.Application.Transpose(Matrix)
+
   End With
   
 End Sub
-
