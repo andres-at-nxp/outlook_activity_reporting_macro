@@ -61,7 +61,7 @@ Sub ThisOultookSession()
             ReDim Preserve Matrix(DateLength, UBound(Categories) + 1)
             Categories(j) = meeting.Categories
         End If
-        Matrix(iDate, j + 1) = Matrix(iDate, j + 1) + meeting.Duration
+        Matrix(iDate, j + 1) = Matrix(iDate, j + 1) + (meeting.Duration / 60)
     Next
     dtDate = dtDate + 1
     iDate = iDate + 1
