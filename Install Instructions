@@ -1,0 +1,18 @@
+1) Enable Developer tab in Outlook
+  File -> Options -> Customize Ribbon
+  Window with two lists opens. On the list on the right, make sure that "Developer" is selected and click "OK"
+2) Copy-paste macro into Outlook
+  Developer -> Visual Basic -> (Enable Macros if asked)
+    VBA editor opens. 
+  Top left, panel for "Project" -> Microsoft Outlook Objects -> ThisOutlookSession
+    A text window opens with title "VbaProject.OTM"
+  Copy text macro from repository into this window and save.
+3) Enable Connection with Excel
+  Still in the VisualBasic view, do Tools -> References...
+    A window opens with a list "Available references." 
+      Scroll to find "Microsoft Excel 16.0 Object Library" and make sure it is selected.
+      Click OK
+  Save the project
+  Close VBA
+4) Running the macro
+  In main outlook window, do Developer -> Macros -> Project1.ThisOutlookSession.ThisOutlookSession
