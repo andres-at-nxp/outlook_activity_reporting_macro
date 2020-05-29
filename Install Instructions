@@ -1,18 +1,15 @@
+Information on how to install/remove the file is provided by Microsoft here:
+https://support.microsoft.com/en-us/help/290779/managing-and-distributing-outlook-visual-basic-for-vba
+
+The basic approach is that the OTM file in this repository needs to be installed in the following directory:
+<Drive>:\Users\<LogonName>\AppData\Roaming\Microsoft\Outlook
+
+Once it is installed, the macro can be called (after restarting Outlook).
+
+How to access the macro:
+==============================
 1) Enable Developer tab in Outlook
   File -> Options -> Customize Ribbon
   Window with two lists opens. On the list on the right, make sure that "Developer" is selected and click "OK"
-2) Copy-paste macro into Outlook
-  Developer -> Visual Basic -> (Enable Macros if asked)
-    VBA editor opens. 
-  Top left, panel for "Project" -> Microsoft Outlook Objects -> ThisOutlookSession
-    A text window opens with title "VbaProject.OTM"
-  Copy text macro from repository into this window and save.
-3) Enable Connection with Excel
-  Still in the VisualBasic view, do Tools -> References...
-    A window opens with a list "Available references." 
-      Scroll to find "Microsoft Excel 16.0 Object Library" and make sure it is selected.
-      Click OK
-  Save the project
-  Close VBA
-4) Running the macro
-  In main outlook window, do Developer -> Macros -> Project1.ThisOutlookSession.ThisOutlookSession
+2) Running the macro
+  In main outlook window, do Developer -> Macros -> Project1.ThisOutlookSession.callForm
